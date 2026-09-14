@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PyNDS · Учебная спецификация</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  </head>
+  <body>
+    <div class="background">
+      <div class="blob blob--one"></div>
+      <div class="blob blob--two"></div>
+      <div class="grid"></div>
+    </div>
+
+    <div class="app">
+      <header class="hero">
+        <div class="hero__badge">PyNDS · Учебный проект</div>
+        <h1>От цены — к спецификации</h1>
+        <p>
+          Составьте список товаров, рассчитайте НДС и подготовьте документы.
+          Все данные обрабатываются на вашем компьютере.
+        </p>
+        <div class="hero__meta">
+          <div>
+            <span class="meta__label">Формула</span>
+            <span class="meta__value">НДС = Цена с НДС × ставка / (100 + ставка)</span>
+          </div>
+          <div>
+            <span class="meta__label">Ставка НДС</span>
+            <span class="meta__value" id="vatRateBadge">22,00%</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="mode-label" id="modeLabel" role="status"></div>
+      <div class="tabs" role="tablist" aria-label="Разделы приложения">
+        <button role="tab" class="tab is-active" data-tab="data">Таблица</button>
+        <button role="tab" class="tab" data-tab="settings">Настройки</button>
+      </div>
+
+      <section class="panel panel--data" data-tab-panel="data">
+        <div class="panel__toolbar">
+          <div class="toolbar__actions">
+            <button class="button button--sea" id="loadDemo">Загрузить пример</button>
+            <button class="button button--primary" id="addRow">Добавить строку</button>
+            <div class="toolbar__count">
+              <label for="rowCount">Кол-во строк</label>
+              <input
+                class="field field--count"
+                id="rowCount"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="5"
+              />
+              <button class="button button--ghost" id="addRows">Добавить N</button>
+            </div>
+            <button class="button button--ghost" id="clearRows">Очистить таблицу</button>
+            <button class="button button--excel" id="importExcel">Импорт из Excel</button>
+            <button class="button button--ghost" id="exportExcel">Экспорт в Excel</button>
+            <button class="button button--sea" id="exportWord">Спецификация в Word</button>
+          </div>
+          <div class="toolbar__hint">До 1 000 строк. Введите одну из цен — вторая рассчитается автоматически.</div>
+        </div>
+
+        <div class="table">
+          <div class="table__header">
+            <div>№</div>
+            <div>Наименование товара</div>
+            <div>Цена с НДС</div>
+            <div>Цена без НДС</div>
+            <div>НДС за ед.</div>
+            <div></div>
+          </div>
+          <div class="table__rows" id="rows"></div>
+        </div>
+        <div class="totals" aria-label="Итоги спецификации">
+          <div><span>Позиций</span><strong id="positionCount">0</strong></div>
+          <div><span>Без НДС</span><strong id="sumNet">0,00 ₽</strong></div>
+          <div><span>В том числе НДС</span><strong id="sumVat">0,00 ₽</strong></div>
+          <div class="totals__primary"><span>Всего с НДС</span><strong id="sumGross">0,00 ₽</strong></div>
+        </div>
+        <p class="toolbar__hint" id="tableStatus" role="status"></p>
+      </section>
+
+      <section class="panel panel--settings is-hidden" data-tab-panel="settings">
+        <div class="settings">
+          <div class="settings__section">
+            <div class="settings__header">
+              <h2>НДС и договор</h2>
+              <p>Заполните общие реквизиты для спецификации.</p>
+            </div>
+            <div class="settings__grid">
+              <label class="settings__field">
+                <span>Ставка НДС, %</span>
+                <input
+                  class="field"
+                  id="vatRate"
+                  type="text"
+                  inputmode="decimal"
+                  pattern="[0-9., ]*"
+                  value="22"
+                />
+              </label>
+              <label class="settings__field">
+                <span>Дата спецификации</span>
+                <input class="field" id="specDate" type="text" placeholder="дд.мм.гггг" />
+              </label>
+              <label class="settings__field">
+                <span>Приложение №</span>
+                <input class="field" id="appendixNo" type="text" placeholder="2" />
+              </label>
+              <label class="settings__field settings__field--wide">
+                <span>Строка «к Договору поставки…»</span>
+                <input
+                  class="field"
+                  id="supplyContractLine"
+                  type="text"
+                  placeholder="к Договору поставки № ____ от __.__.____г."
+                />
+              </label>
+              <label class="settings__field settings__field--wide">
+                <span>Строка «Спецификация…»</span>
+                <input
+                  class="field"
+                  id="specLine"
+                  type="text"
+                  placeholder="Спецификация № ____ от __.__.____ г."
+                />
+              </label>
+              <label class="settings__field settings__field--wide">
+                <span>Строка «к Договору № …»</span>
+                <input
+                  class="field"
+                  id="contractLine"
+                  type="text"
+                  placeholder="к Договору № ____ от __.__.____ г."
+                />
+              </label>
+            </div>
+          </div>
+
+          <div class="settings__section">
+            <div class="settings__header">
+              <h2>Реквизиты и условия</h2>
+              <p>Значения будут подставлены в блок после таблицы.</p>
+            </div>
+            <div class="settings__list">
+              <div class="settings__row" data-detail-label="Срок поставки:">
+                <label>Срок поставки:</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Реквизиты грузополучателя:">
+                <label>Реквизиты грузополучателя:</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Реквизиты поставщика:">
+                <label>Реквизиты поставщика:</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Транспорт поставки">
+                <label>Транспорт поставки</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Величина транспортных расходов">
+                <label>Величина транспортных расходов</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Базис поставки">
+                <label>Базис поставки</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Станция (пункт) отправления">
+                <label>Станция (пункт) отправления</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Станция (пункт) назначения">
+                <label>Станция (пункт) назначения</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Способ оплаты">
+                <label>Способ оплаты</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Условия оплаты">
+                <label>Условия оплаты</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Условия гарантии">
+                <label>Условия гарантии</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Дополнительные условия">
+                <label>Дополнительные условия</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+              <div class="settings__row" data-detail-label="Срок действия настоящей Спецификации:">
+                <label>Срок действия настоящей Спецификации:</label>
+                <textarea class="field field--area" data-detail-value></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings__section">
+            <div class="settings__header">
+              <h2>Подписи</h2>
+              <p>Заполните блоки для покупателя и поставщика.</p>
+            </div>
+            <div class="settings__grid">
+              <label class="settings__field">
+                <span>Должность покупателя</span>
+                <input class="field" id="buyerPosition" type="text" />
+              </label>
+              <label class="settings__field">
+                <span>Должность поставщика</span>
+                <input class="field" id="sellerPosition" type="text" />
+              </label>
+              <label class="settings__field">
+                <span>Организация покупателя</span>
+                <input class="field" id="buyerOrg" type="text" />
+              </label>
+              <label class="settings__field">
+                <span>Организация поставщика</span>
+                <input class="field" id="sellerOrg" type="text" />
+              </label>
+              <label class="settings__field">
+                <span>Подпись покупателя</span>
+                <input class="field" id="buyerSign" type="text" />
+              </label>
+              <label class="settings__field">
+                <span>Подпись поставщика</span>
+                <input class="field" id="sellerSign" type="text" />
+              </label>
+            </div>
+            <div class="settings__actions">
+              <button class="button button--primary" id="saveSettings">Сохранить настройки</button>
+              <div class="toolbar__hint" id="settingsStatus" role="status"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script src="calculator.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

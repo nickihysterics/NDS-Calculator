@@ -1,0 +1,8 @@
+{
+  "vatRate": "22",
+  "rows": [
+    {"name": "Бумага офисная, А4", "net": "350", "qty": "5", "unit": "упак", "source": "net"},
+    {"name": "Кабель USB-C, 1 м", "gross": "610", "qty": "3", "unit": "шт", "source": "gross"},
+    {"name": "Лента упаковочная", "net": "80", "qty": "2.5", "unit": "м", "source": "net"}
+  ]
+}

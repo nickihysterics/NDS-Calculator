@@ -1,0 +1,12 @@
+[
+  {"id": "gross-22", "rate": "22", "raw": {"gross": "122", "qty": "1", "source": "gross"}, "expected": ["100.00", "122.00", "22.00", "100.00", "122.00"]},
+  {"id": "net-22", "rate": "22", "raw": {"net": "350", "qty": "5", "source": "net"}, "expected": ["350.00", "427.00", "77.00", "1750.00", "2135.00"]},
+  {"id": "fractional-quantity", "rate": "22", "raw": {"net": "80", "qty": "2,5", "source": "net"}, "expected": ["80.00", "97.60", "17.60", "200.00", "244.00"]},
+  {"id": "half-cent", "rate": "20", "raw": {"gross": "0.03", "qty": "1", "source": "gross"}, "expected": ["0.03", "0.03", "0.00", "0.03", "0.03"]},
+  {"id": "net-half-up", "rate": "10", "raw": {"net": "0.05", "qty": "3", "source": "net"}, "expected": ["0.05", "0.06", "0.01", "0.15", "0.18"]},
+  {"id": "zero-rate", "rate": "0", "raw": {"gross": "1 234,56", "qty": "1", "source": "gross"}, "expected": ["1234.56", "1234.56", "0.00", "1234.56", "1234.56"]},
+  {"id": "free-item", "rate": "22", "raw": {"gross": "0", "qty": "1", "source": "gross"}, "expected": ["0.00", "0.00", "0.00", "0.00", "0.00"]},
+  {"id": "price-rounding", "rate": "22", "raw": {"gross": "1.005", "qty": "1", "source": "gross"}, "expected": ["0.83", "1.01", "0.18", "0.83", "1.01"]},
+  {"id": "quantity-rounding", "rate": "22", "raw": {"net": "10", "qty": "1.2345", "source": "net"}, "expected": ["10.00", "12.20", "2.20", "12.35", "15.07"]},
+  {"id": "fractional-rate", "rate": "5.555", "raw": {"net": "100", "qty": "1", "source": "net"}, "expected": ["100.00", "105.56", "5.56", "100.00", "105.56"]}
+]
